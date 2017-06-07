@@ -77,7 +77,6 @@ namespace SpringGUI
             itemTransform.localRotation = Quaternion.identity;
             itemTransform.localScale = Vector3.one;
         }
-
         private static void PlaceUIElementRoot( GameObject element , MenuCommand menuCommand )
         {
             GameObject parent = menuCommand.context as GameObject;
@@ -93,7 +92,19 @@ namespace SpringGUI
                 SetPositionVisibleinSceneView(parent.GetComponent<RectTransform>(), element.GetComponent<RectTransform>());
             Selection.activeGameObject = element;
         }
-
+        public static GameObject CreateNewUI( )
+        {
+            GameObject canvas = new GameObject();
+            canvas.name = GameObjectUtility.GetUniqueNameForSibling(null , "Canvas");
+            canvas.layer = LayerMask.NameToLayer(UI_LAYER_NAME);
+            canvas.AddComponent<Canvas>();
+            canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.AddComponent<CanvasScaler>();
+            canvas.AddComponent<GraphicRaycaster>();
+            Undo.RegisterCreatedObjectUndo(canvas , "Create" + canvas.name);
+            CreateEventSystem(false);
+            return canvas;
+        }
         public static GameObject GetOrCreateCanvasGameObject( )
         {
             GameObject selectedGo = Selection.activeGameObject;
@@ -105,40 +116,10 @@ namespace SpringGUI
                 return canvas.gameObject;
             return CreateNewUI();
         }
-
-        [MenuItem("GameObject/UI/UITree",false,2063)]
-        public static void AddUITree( MenuCommand menuCommand ) 
-        {
-            GameObject uiTree = SpringGUIDefaultControls.CreaatUITree(GetStandardResources());
-            PlaceUIElementRoot(uiTree,menuCommand);
-        }
-
-        [MenuItem("GameObject/UI/UITreeNode",false,2064)]
-        public static void AddUITreeNode( MenuCommand menuCommand )
-        {
-            GameObject uiTreeNode = SpringGUIDefaultControls.CreaatUITree(GetStandardResources());
-            PlaceUIElementRoot(uiTreeNode,menuCommand);
-        }
-
-        [MenuItem("GameObject/UI/Buttons/DoubleClickButton" , false , 2065)]
-        public static void AddDoubleClickButton( MenuCommand menuCommand )
-        {
-            GameObject dcButton = SpringGUIDefaultControls.CreateDoubleClickButton(GetStandardResources());
-            PlaceUIElementRoot(dcButton,menuCommand);
-        }
-
-        [MenuItem("GameObject/UI/Buttons/LongClickButton" , false , 2066)]
-        public static void AddLongClickButton( MenuCommand menuCommand )
-        {
-            GameObject lcButton = SpringGUIDefaultControls.CreateLongClickButton(GetStandardResources());
-            PlaceUIElementRoot(lcButton,menuCommand);
-        }
-
         private static void CreateEventSystem( bool select )
         {
             CreateEventSystem(select , null);
         }
-
         private static void CreateEventSystem( bool select , GameObject parent )
         {
             var esys = Object.FindObjectOfType<EventSystem>();
@@ -158,18 +139,60 @@ namespace SpringGUI
             }
         }
 
-        public static GameObject CreateNewUI( )
+        #region 目录树 && 目录节点模板
+
+        [MenuItem("GameObject/UI/UITree",false,2063)]
+        public static void AddUITree( MenuCommand menuCommand ) 
         {
-            GameObject canvas = new GameObject();
-            canvas.name = GameObjectUtility.GetUniqueNameForSibling(null , "Canvas");
-            canvas.layer = LayerMask.NameToLayer(UI_LAYER_NAME);
-            canvas.AddComponent<Canvas>();
-            canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.AddComponent<CanvasScaler>();
-            canvas.AddComponent<GraphicRaycaster>();
-            Undo.RegisterCreatedObjectUndo(canvas,"Create" + canvas.name);
-            CreateEventSystem(false);
-            return canvas;
+            GameObject uiTree = SpringGUIDefaultControls.CreaatUITree(GetStandardResources());
+            PlaceUIElementRoot(uiTree,menuCommand);
         }
+
+        [MenuItem("GameObject/UI/UITreeNode",false,2064)]
+        public static void AddUITreeNode( MenuCommand menuCommand )
+        {
+            GameObject uiTreeNode = SpringGUIDefaultControls.CreaatUITree(GetStandardResources());
+            PlaceUIElementRoot(uiTreeNode,menuCommand);
+        }
+
+        #endregion
+
+        #region 双击按钮 && 长击按钮
+
+        [MenuItem("GameObject/UI/Buttons/DoubleClickButton" , false , 2065)]
+        public static void AddDoubleClickButton( MenuCommand menuCommand )
+        {
+            GameObject dcButton = SpringGUIDefaultControls.CreateDoubleClickButton(GetStandardResources());
+            PlaceUIElementRoot(dcButton,menuCommand);
+        }
+
+        [MenuItem("GameObject/UI/Buttons/LongClickButton" , false , 2066)]
+        public static void AddLongClickButton( MenuCommand menuCommand )
+        {
+            GameObject lcButton = SpringGUIDefaultControls.CreateLongClickButton(GetStandardResources());
+            PlaceUIElementRoot(lcButton,menuCommand);
+        }
+
+        #endregion
+
+        #region 日历 && 日期拾取器
+
+        [MenuItem("GameObject/UI/Calendar")]
+        public static void AddCalendar( MenuCommand menuCommand )
+        {
+            GameObject calendar = SpringGUIDefaultControls.CreateCalendar(GetStandardResources());
+            PlaceUIElementRoot(calendar,menuCommand);
+            calendar.transform.localPosition = Vector3.zero;
+        }
+
+        [MenuItem("GameObject/UI/DatePicker")]
+        public static void AddDatePicker( MenuCommand menuCommand )
+        {
+            GameObject datePicker = SpringGUIDefaultControls.CreateDatePicker(GetStandardResources());
+            PlaceUIElementRoot(datePicker,menuCommand);
+            datePicker.transform.localPosition = Vector3.zero;
+        }
+
+        #endregion
     }
 }
