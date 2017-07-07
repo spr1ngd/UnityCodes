@@ -23,6 +23,7 @@ namespace SpringGUI
         private static readonly Vector2 _defaultUITreeNodeSize = new Vector2(300 , 25);
         private static readonly Vector2 _defaultCalendarSize = new Vector2(220 , 160);
         private static readonly Vector2 _defaultDatePickerSize = new Vector2(180 , 25);
+        private static readonly Vector2 _defaultColoredTapeSize = new Vector2(20,200);
 
         private static GameObject CreateUIElementRoot( string name , Vector2 size )
         {
@@ -383,6 +384,31 @@ namespace SpringGUI
             calendar.transform.localPosition -= new Vector3(0, _defaultDatePickerSize.y/2+_defaultCalendarSize.y/2, 0);
             calendar.SetActive(false);
             return datePicker;
+        }
+
+        /// <summary>
+        /// Create Vertical Colored Tape
+        /// </summary>
+        public static GameObject CreataVerticalColoredTape( Resources resources )
+        {
+            GameObject coloredTape = CreateUIElementRoot("ColoredTapte" , _defaultColoredTapeSize);
+            coloredTape.AddComponent<ColoredTape>();
+            return coloredTape;
+        }
+
+        /// <summary>
+        /// Create Horizontal Colored Tape
+        /// </summary>
+        public static GameObject CreataHorizontalColoredTape( Resources resources )
+        {
+            GameObject coloredTape = CreateUIElementRoot("ColoredTapte" , new Vector2(_defaultColoredTapeSize.y , _defaultColoredTapeSize.x));
+            coloredTape.AddComponent<ColoredTape>();
+            return coloredTape;
+        }
+
+        public static GameObject CreateColorPicker( Resources resources )
+        {
+            return null;
         }
     }
 }

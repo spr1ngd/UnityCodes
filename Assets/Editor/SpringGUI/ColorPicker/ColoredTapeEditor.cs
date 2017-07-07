@@ -36,6 +36,11 @@ namespace SpringGUI
             //_colors = serializedObject.FindProperty("_colors");
         }
 
+        protected override void OnDisable( )
+        {
+
+        }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();

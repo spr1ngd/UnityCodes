@@ -8,16 +8,12 @@ namespace SpringGUI
     [CanEditMultipleObjects]
     public class UITreeEditor : Editor
     {
-        private int _iconMode = 0;
-
-        private SerializedProperty m_treeNodeSprites = null;
         private SerializedProperty m_closeIcon = null;
         private SerializedProperty m_openIcon = null;
         private SerializedProperty m_lastLayerIcon = null;
 
         protected virtual void OnEnable()
         {
-            m_treeNodeSprites = serializedObject.FindProperty("m_treeNodeSprites");
             m_closeIcon = serializedObject.FindProperty("m_closeIcon");
             m_openIcon = serializedObject.FindProperty("m_openIcon");
             m_lastLayerIcon = serializedObject.FindProperty("m_lastLayerIcon");

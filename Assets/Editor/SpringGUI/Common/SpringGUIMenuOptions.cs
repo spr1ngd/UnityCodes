@@ -80,16 +80,15 @@ namespace SpringGUI
         private static void PlaceUIElementRoot( GameObject element , MenuCommand menuCommand )
         {
             GameObject parent = menuCommand.context as GameObject;
-            if (null == parent || parent.GetComponentInParent<Canvas>())
+            if ( parent == null || parent.GetComponentInParent<Canvas>() == null )
                 parent = GetOrCreateCanvasGameObject();
-            element.name = GameObjectUtility.GetUniqueNameForSibling(parent.transform,element.name);
-            Undo.RegisterCreatedObjectUndo(element,"Create" + element.name);
-            Undo.SetTransformParent(element.transform,parent.transform,"Parent" + element.name);
-            if( parent != menuCommand.context)
-
-            element.transform.SetParent(parent.transform);
-            if(parent != menuCommand.context)
-                SetPositionVisibleinSceneView(parent.GetComponent<RectTransform>(), element.GetComponent<RectTransform>());
+            string uniqueName = GameObjectUtility.GetUniqueNameForSibling(parent.transform , element.name);
+            element.name = uniqueName;
+            Undo.RegisterCreatedObjectUndo(element , "Create " + element.name);
+            Undo.SetTransformParent(element.transform , parent.transform , "Parent " + element.name);
+            GameObjectUtility.SetParentAndAlign(element , parent);
+            if ( parent != menuCommand.context ) // not a context click, so center in sceneview
+                SetPositionVisibleinSceneView(parent.GetComponent<RectTransform>() , element.GetComponent<RectTransform>());
             Selection.activeGameObject = element;
         }
         public static GameObject CreateNewUI( )
@@ -141,14 +140,14 @@ namespace SpringGUI
 
         #region 目录树 && 目录节点模板
 
-        [MenuItem("GameObject/UI/UITree",false,2063)]
+        [MenuItem("GameObject/UI/SpringGUI/Tree/UITree",false,2063)]
         public static void AddUITree( MenuCommand menuCommand ) 
         {
             GameObject uiTree = SpringGUIDefaultControls.CreaatUITree(GetStandardResources());
             PlaceUIElementRoot(uiTree,menuCommand);
         }
 
-        [MenuItem("GameObject/UI/UITreeNode",false,2064)]
+        [MenuItem("GameObject/UI/SpringGUI/Tree/UITreeNode" , false,2064)]
         public static void AddUITreeNode( MenuCommand menuCommand )
         {
             GameObject uiTreeNode = SpringGUIDefaultControls.CreaatUITree(GetStandardResources());
@@ -159,14 +158,14 @@ namespace SpringGUI
 
         #region 双击按钮 && 长击按钮
 
-        [MenuItem("GameObject/UI/Buttons/DoubleClickButton" , false , 2065)]
+        [MenuItem("GameObject/UI/SpringGUI/Buttons/DoubleClickButton" , false , 2065)]
         public static void AddDoubleClickButton( MenuCommand menuCommand )
         {
             GameObject dcButton = SpringGUIDefaultControls.CreateDoubleClickButton(GetStandardResources());
             PlaceUIElementRoot(dcButton,menuCommand);
         }
 
-        [MenuItem("GameObject/UI/Buttons/LongClickButton" , false , 2066)]
+        [MenuItem("GameObject/UI/SpringGUI/Buttons/LongClickButton" , false , 2066)]
         public static void AddLongClickButton( MenuCommand menuCommand )
         {
             GameObject lcButton = SpringGUIDefaultControls.CreateLongClickButton(GetStandardResources());
@@ -177,7 +176,7 @@ namespace SpringGUI
 
         #region 日历 && 日期拾取器
 
-        [MenuItem("GameObject/UI/Calendar")]
+        [MenuItem("GameObject/UI/SpringGUI/Calendar",false,2067)]
         public static void AddCalendar( MenuCommand menuCommand )
         {
             GameObject calendar = SpringGUIDefaultControls.CreateCalendar(GetStandardResources());
@@ -185,12 +184,44 @@ namespace SpringGUI
             calendar.transform.localPosition = Vector3.zero;
         }
 
-        [MenuItem("GameObject/UI/DatePicker")]
+        [MenuItem("GameObject/UI/SpringGUI/DatePicker" , false , 2068)]
         public static void AddDatePicker( MenuCommand menuCommand )
         {
             GameObject datePicker = SpringGUIDefaultControls.CreateDatePicker(GetStandardResources());
             PlaceUIElementRoot(datePicker,menuCommand);
             datePicker.transform.localPosition = Vector3.zero;
+        }
+
+        #endregion
+
+        #region 渐变色带 && 颜色拾取器
+
+        [MenuItem("GameObject/UI/SpringGUI/ColoredTape/VerticalColoredTape" , false , 2069)]
+        public static void AddVerticalColoredTape( MenuCommand menuCommand )
+        {
+            GameObject coloredTape = SpringGUIDefaultControls.CreataVerticalColoredTape(GetStandardResources());
+            PlaceUIElementRoot(coloredTape , menuCommand);
+            coloredTape.transform.localPosition = Vector3.zero;
+            ColoredTape tape = coloredTape.GetComponent<ColoredTape>();
+            tape.TapeDirection = ColoredTape.E_DrawDirection.Vertical;
+        }
+
+        [MenuItem("GameObject/UI/SpringGUI/ColoredTape/HorizontalColoredTape" , false , 2070)]
+        public static void AddHorizontalColoredTape( MenuCommand menuCommand )
+        {
+            GameObject coloredTape = SpringGUIDefaultControls.CreataHorizontalColoredTape(GetStandardResources());
+            PlaceUIElementRoot(coloredTape , menuCommand);
+            coloredTape.transform.localPosition = Vector3.zero;
+            ColoredTape tape = coloredTape.GetComponent<ColoredTape>();
+            tape.TapeDirection = ColoredTape.E_DrawDirection.Horizontal;
+        }
+
+        [MenuItem("GameObject/UI/SpringGUI/ColorPicker" , false , 2071)]
+        public static void AddColorPicker( MenuCommand menuCommand )
+        {
+            GameObject colorPicker = SpringGUIDefaultControls.CreateColorPicker(GetStandardResources());
+            PlaceUIElementRoot(colorPicker,menuCommand);
+            colorPicker.transform.localPosition = Vector3.zero;
         }
 
         #endregion
