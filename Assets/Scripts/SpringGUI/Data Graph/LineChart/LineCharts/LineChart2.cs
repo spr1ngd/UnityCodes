@@ -13,30 +13,26 @@ namespace SpringGUI
 {
     public class LineChart2 : BaseLineChart
     {
-        public override VertexHelper DrawLineChart( VertexHelper vh , Rect vRect , LineChartBasis VBasis )
+        public override VertexHelper DrawLineChart( VertexHelper vh , Rect vRect , LineChartData VBasis )
         {
             vh = base.DrawLineChart(vh , vRect , VBasis);
-            foreach ( KeyValuePair<int , IList<Vector2>> line in lines )
+            foreach ( KeyValuePair<int , VertexStream> line in lines )
             {
-                if ( line.Value.Count <= 1 )
+                if ( line.Value.vertexs.Count <= 1 )
                     continue;
-                var startPos = GetPos(line.Value[0]);
-                Color color;
-                if (line.Key.Equals(0))
-                    color = Color.yellow;
-                else
-                    color = Color.cyan;
-                for ( int i = 1 ; i < line.Value.Count ; i++ )
+                var startPos = GetPos(line.Value.vertexs[0]);
+                for ( int i = 1 ; i < line.Value.vertexs.Count ; i++ )
                 {
-                    var endPos = GetPos(line.Value[i]);
+                    var endPos = GetPos(line.Value.vertexs[i]);
                     var startBottom = new Vector2(startPos.x , origin.y);
                     var endBottom = new Vector2(endPos.x, origin.y);
+                    Color color1 = new Color(line.Value.color.r * 0.7f , line.Value.color.g * 0.7f , line.Value.color.b * 0.7f , 1);
                     vh.AddUIVertexQuad(new UIVertex[]
                     {
-                        GetUIVertex(startBottom,color),
-                        GetUIVertex(startPos,new Color(color.r * 0.7f,color.g* 0.7f,color.b* 0.7f,1)),
-                        GetUIVertex(endPos,new Color(color.r * 0.7f,color.g* 0.7f,color.b* 0.7f,1)),
-                        GetUIVertex(endBottom,color),
+                        GetUIVertex(startBottom,line.Value.color),
+                        GetUIVertex(startPos, color1),
+                        GetUIVertex(endPos,color1),
+                        GetUIVertex(endBottom,line.Value.color),
                     });
                     startPos = endPos;
                 }

@@ -776,5 +776,26 @@ namespace SpringGUI
             vSlider.handleRect = handle.GetComponent<RectTransform>();
             return verticalSlider.gameObject;
         }
+
+        public static GameObject CreateLineChartGraph( Resources resources )
+        {
+            // line chart 
+            GameObject lienChart = CreateUIElementRoot("LineChart" , new Vector2(425 , 200));
+
+            // x axis unit
+            GameObject xUnit = DefaultControls.CreateText(convertToDefaultResources(resources));
+            xUnit.transform.SetParent(lienChart.transform);
+            var xrect = xUnit.GetComponent<RectTransform>();
+            xrect.pivot = new Vector2(1 , 0.5f);
+            xUnit.transform.localPosition = new Vector3(-215,-100);
+
+            // y axis unit 
+            GameObject yUnit = DefaultControls.CreateText(convertToDefaultResources(resources));
+            yUnit.transform.SetParent(lienChart.transform);
+            var yrect = yUnit.GetComponent<RectTransform>();
+            yrect.pivot = new Vector2(0.5f , 0f);
+            yrect.transform.localPosition = new Vector3(-212.5f , 105);
+            return lienChart;
+        }
     }
 }

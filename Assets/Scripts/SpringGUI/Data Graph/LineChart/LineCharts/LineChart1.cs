@@ -13,25 +13,23 @@ namespace SpringGUI
 {
     public class LineChart1 : BaseLineChart
     {
-        public override VertexHelper DrawLineChart(VertexHelper vh, Rect vRect, LineChartBasis VBasis)
+        public override VertexHelper DrawLineChart(VertexHelper vh, Rect vRect, LineChartData VBasis)
         {
             vh =  base.DrawLineChart(vh, vRect, VBasis);
-            foreach (KeyValuePair<int, IList<Vector2>> line in lines)
+            foreach (KeyValuePair<int, VertexStream> line in lines)
             {
-                if ( line.Value.Count <= 1 )
+                if ( line.Value.vertexs.Count <= 1 )
                     continue;
-                var startPos = GetPos(line.Value[0]);
+                var startPos = GetPos(line.Value.vertexs[0]);
                 UIVertex[] oldVertexs = new UIVertex[] {};
-                for ( int i = 1 ; i < line.Value.Count ; i++ )
+                for ( int i = 1 ; i < line.Value.vertexs.Count ; i++ )
                 {
-                    var endPos = GetPos(line.Value[i]);
-                    
-                    var newVertexs = GetQuad(startPos , endPos , Color.red);
+                    var endPos = GetPos(line.Value.vertexs[i]);
+                    var newVertexs = GetQuad(startPos , endPos , line.Value.color);
                     if ( oldVertexs.Length.Equals(0) )
                     {
                         oldVertexs = newVertexs;
                     }
-                    // 补足缺陷
                     else
                     {
                         vh.AddUIVertexQuad(new UIVertex[]

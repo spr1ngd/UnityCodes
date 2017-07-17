@@ -16,10 +16,10 @@ namespace SpringGUI
         protected Rect rect;
         protected Vector2 size;
         protected Vector2 origin;
-        protected LineChartBasis basis;
-        protected Dictionary<int, IList<Vector2>> lines;
+        protected LineChartData basis;
+        protected Dictionary<int, VertexStream> lines;
 
-        public virtual VertexHelper DrawLineChart( VertexHelper vh , Rect vRect , LineChartBasis vBasis )
+        public virtual VertexHelper DrawLineChart( VertexHelper vh , Rect vRect , LineChartData vBasis )
         {
             this.basis = vBasis;
             lines = vBasis.Lines;
@@ -74,20 +74,58 @@ namespace SpringGUI
                 return vh;
             if ( basis.IsDrawMeshX )
             {
-                for (float y = 0 ; y <= size.y; y += basis.MeshCellSize.y)
+                if (!basis.IsImaginaryLine)
                 {
-                    Vector2 startPoint = origin + new Vector2(0 , y);
-                    Vector2 endPoint = startPoint + new Vector2(size.x, 0);
-                    vh.AddUIVertexQuad(GetQuad(startPoint,endPoint, basis.MeshColor , basis.MeshWidth));
+                    for ( float y = 0 ; y <= size.y ; y += basis.MeshCellSize.y )
+                    {
+                        Vector2 startPoint = origin + new Vector2(0 , y);
+                        Vector2 endPoint = startPoint + new Vector2(size.x , 0);
+                        vh.AddUIVertexQuad(GetQuad(startPoint , endPoint , basis.MeshColor , basis.MeshWidth));
+                    }
+                }
+                else
+                {
+                    for ( float y = 0 ; y <= size.y ; y += basis.MeshCellSize.y )
+                    {
+                        Vector2 startPoint = origin + new Vector2(0 , y);
+                        Vector2 endPoint = startPoint + new Vector2(8 , 0);
+                        for (float x = 0; x < size.x; x += (8 + 2))
+                        {
+                            vh.AddUIVertexQuad(GetQuad(startPoint , endPoint , basis.MeshColor , basis.MeshWidth));
+                            startPoint = startPoint + new Vector2(10 , 0);
+                            endPoint = startPoint + new Vector2(8 , 0);
+                            if(endPoint.x > size.x/2.0f )
+                                endPoint = new Vector2(size.x / 2.0f , endPoint.y);
+                        }
+                    }
                 }
             }
             if ( basis.IsDrawMeshY )
             {
-                for (float x = 0; x <= size.x; x += basis.MeshCellSize.x)
+                if (!basis.IsImaginaryLine)
                 {
-                    Vector2 startPoint = origin + new Vector2(x , 0);
-                    Vector2 endPoint = startPoint + new Vector2(0, size.y);
-                    vh.AddUIVertexQuad(GetQuad(startPoint , endPoint , basis.MeshColor , basis.MeshWidth));
+                    for (float x = 0; x <= size.x; x += basis.MeshCellSize.x)
+                    {
+                        Vector2 startPoint = origin + new Vector2(x, 0);
+                        Vector2 endPoint = startPoint + new Vector2(0, size.y);
+                        vh.AddUIVertexQuad(GetQuad(startPoint, endPoint, basis.MeshColor, basis.MeshWidth));
+                    }
+                }
+                else
+                {
+                    for ( float x = 0 ; x <= size.x ; x += basis.MeshCellSize.x )
+                    {
+                        Vector2 startPoint = origin + new Vector2(x , 0);
+                        Vector2 endPoint = startPoint + new Vector2(0 , 8);
+                        for (float y = 0; y < size.y; y += (8 + 2))
+                        {
+                            vh.AddUIVertexQuad(GetQuad(startPoint , endPoint , basis.MeshColor , basis.MeshWidth));
+                            startPoint = startPoint + new Vector2(0 , 10);
+                            endPoint = startPoint + new Vector2(0 , 8);
+                            if (endPoint.y > size.y/2.0f )
+                                endPoint = new Vector2(endPoint.x, size.y / 2.0f);
+                        }
+                    }
                 }
             }
             return vh;

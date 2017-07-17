@@ -12,7 +12,7 @@ namespace SpringGUI
 {
     public interface ILineChart
     {
-        VertexHelper DrawLineChart( VertexHelper vh , Rect rect , LineChartBasis basis);
+        VertexHelper DrawLineChart( VertexHelper vh , Rect rect , LineChartData basis);
         VertexHelper DrawMesh( VertexHelper vh );
         VertexHelper DrawAxis( VertexHelper vh );
     }

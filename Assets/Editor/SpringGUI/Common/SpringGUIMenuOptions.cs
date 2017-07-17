@@ -226,5 +226,13 @@ namespace SpringGUI
         }
 
         #endregion
+        [MenuItem("GameObject/UI/SpringGUI/Data Graph/LineChart")]
+        public static void AddLineChartGraph( MenuCommand menuCommand )
+        {
+            GameObject lineGraph = SpringGUIDefaultControls.CreateLineChartGraph(GetStandardResources());
+            PlaceUIElementRoot(lineGraph , menuCommand);
+            lineGraph.transform.localPosition = Vector3.zero;
+            lineGraph.AddComponent<LineChart>();
+        }
     }
 }
