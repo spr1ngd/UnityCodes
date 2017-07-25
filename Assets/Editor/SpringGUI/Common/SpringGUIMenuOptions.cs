@@ -226,6 +226,9 @@ namespace SpringGUI
         }
 
         #endregion
+
+        #region 数据表
+
         [MenuItem("GameObject/UI/SpringGUI/Data Graph/LineChart")]
         public static void AddLineChartGraph( MenuCommand menuCommand )
         {
@@ -234,5 +237,17 @@ namespace SpringGUI
             lineGraph.transform.localPosition = Vector3.zero;
             lineGraph.AddComponent<LineChart>();
         }
+
+
+        public static void AddRadarMap( MenuCommand menuCommand )
+        {
+            GameObject radarMap = SpringGUIDefaultControls.CreateRadarMap(GetStandardResources());
+            PlaceUIElementRoot(radarMap , menuCommand);
+            radarMap.transform.localPosition = Vector3.zero;
+            radarMap.AddComponent<RadarMap>();
+        }
+
+        #endregion
+
     }
 }

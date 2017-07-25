@@ -25,6 +25,7 @@ namespace SpringGUI
         private static readonly Vector2 _defaultDatePickerSize = new Vector2(180 , 25);
         private static readonly Vector2 _defaultColoredTapeSize = new Vector2(20 , 200);
         private static readonly Vector2 _defaultColorPicker = new Vector2(237 , 421);
+        private static readonly Vector2 _defaultRadarMap = new Vector2(250 , 250);
 
         private static GameObject CreateUIElementRoot( string name , Vector2 size )
         {
@@ -777,6 +778,11 @@ namespace SpringGUI
             return verticalSlider.gameObject;
         }
 
+        /// <summary>
+        /// Create Line Chart Graph
+        /// </summary>
+        /// <param name="resources"></param>
+        /// <returns></returns>
         public static GameObject CreateLineChartGraph( Resources resources )
         {
             // line chart 
@@ -796,6 +802,17 @@ namespace SpringGUI
             yrect.pivot = new Vector2(0.5f , 0f);
             yrect.transform.localPosition = new Vector3(-212.5f , 105);
             return lienChart;
+        }
+
+        /// <summary>
+        /// Create Radar Map
+        /// </summary>
+        /// <param name="resources"></param>
+        /// <returns></returns>
+        public static GameObject CreateRadarMap( Resources resources )
+        {
+            GameObject radarmap = CreateUIElementRoot("RadarMap" , _defaultRadarMap);
+            return radarmap;
         }
     }
 }
