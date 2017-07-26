@@ -41,7 +41,6 @@ namespace SpringGUI
 
         [Space]
         public List<Color> LineColors = new List<Color>();
-        public List<GameObject> Icons = new List<GameObject>();
 
         [NonSerialized]
         private RadarDatas datas = new RadarDatas();
@@ -57,23 +56,57 @@ namespace SpringGUI
         {
             datas.AddRadarData(data);
         }
-        public void Adddata( IList<RadarData> datas )
+        public void Adddata( IList<RadarData> vdatas ) 
         {
-            this.datas.AddRadarData(datas);
+            this.datas.AddRadarData(vdatas);
         }
         public void RemoveAllData()
         {
             datas.RemoveAll();
         }
+        
+        public Color GetLayerColor( int id  )
+        {
+            if (id >= LayerColors .Count)
+            {
+                Debug.LogError("未设置层级颜色，请在RadarMap的Inspector面板配置颜色！");
+                return Color.magenta;
+            }
+            return LayerColors[id];
+        }
+
+        public Color GetLineColor( int id  )
+        {
+            if (id >= LineColors.Count)
+            {
+                Debug.LogError("未设置线段颜色，请在RadarMap的Inspector面板配置颜色！");
+                return Color.magenta;
+            }
+            return LineColors[id];
+        }
     }
 
-    public class BaseRadarFactory :IRadarFactory
+    public class BaseRadarFactory : SpringGUIBase, IRadarFactory
     {
         protected Vector2 origin = Vector2.zero;
         protected RadarBaseData radarData = null;
         protected RadarDatas radarDatas = null;
         protected Vector2 size = Vector2.zero;
-        
+
+        //使用SpringGUIBase继承或者直接获取一个实例,如果你需要继承其他类型时，可以使用构造实例的方法，如下
+        //private ISpringGUIBase springGUIBase = new SpringGUIBase();
+
+        private IRadarBase radarbase = null;
+        private IRadarline radarline = null;
+
+        public BaseRadarFactory(){}
+
+        public BaseRadarFactory( IRadarBase radarBase,IRadarline radarLine )
+        {
+            this.radarbase = radarBase;
+            this.radarline = radarLine;
+        }
+
         /// <summary>
         /// 绘制雷达线段
         /// </summary>
@@ -83,34 +116,30 @@ namespace SpringGUI
         /// <returns></returns>
         public virtual VertexHelper DrawRadar( VertexHelper vh , Rect rect ,RadarBaseData radardata)
         {
+            if (null == radardata)
+                return vh;
             this.radarData = radardata;
             this.radarDatas = this.radarData.Getdata();
             this.size = rect.size;
-            origin = new Vector2(-size.x / 2.0f , -size.y / 2.0f);
-            vh = DrawBase(vh);
-            vh = DrawAxis(vh);
-            vh = DrawLine(vh);
+            this.origin = new Vector2(-size.x / 2.0f , -size.y / 2.0f);
+            DrawBase(vh);
+            DrawAxis(vh);
+            DrawLine(vh);
             return vh;
         }
 
         /// <summary>
-        /// Drwas the line.
+        /// Drwas the line. 在这里绘制基础的线段
         /// </summary>
         /// <returns>The line.</returns>
         /// <param name="vh">Vh.</param>
         public virtual VertexHelper DrawLine( VertexHelper vh )
         {
-            // 在这里绘制基础的线段
             float perRadian = Mathf.PI * 2.0f / radarData.ItemCount;
             for( int i = 0 ; i < radarDatas.datas.Count ; i++ )
             {
                 RadarData radarline = radarDatas.datas[i];
-                Color lineColor = radarData.LineColors[i];
-                //获取icon图标
-                GameObject iconPrefab = null;
-                if (i < radarData.Icons.Count)
-                    iconPrefab = radarData.Icons[i];
-                Vector2 startPos;
+                Color lineColor = radarData.GetLineColor(i);
                 UIVertex[] oldVertexs = null;
                 for( int j = 0 ; j < radarline.keypoints.Count ;j++ )
                 {
@@ -121,13 +150,12 @@ namespace SpringGUI
                         index = 0;
                     float endRadian = perRadian * index;
                     float endRadius = radarData.Radius * radarline.keypoints[index];
-                    startPos = new Vector2( Mathf.Cos(startradian),Mathf.Sin(startradian)) *startradius;
+                    var startPos = new Vector2( Mathf.Cos(startradian),Mathf.Sin(startradian)) *startradius;
                     Vector2 endPos = new Vector2( Mathf.Cos(endRadian),Mathf.Sin(endRadian)) * endRadius;
                     var newVertexs = GetQuad(startPos, endPos, lineColor, radarData.LineWidth);
                     vh.AddUIVertexQuad(newVertexs);
                     if (j > 0)
                     {
-                        //todo 弥补线段的缺陷
                         vh.AddUIVertexQuad(new UIVertex[]
                             {
                                 oldVertexs[1],
@@ -137,7 +165,6 @@ namespace SpringGUI
                             });
                     }
                     oldVertexs = newVertexs;
-                    //ShowIcon(iconPrefab,startPos);
                 }
             }
             return vh;
@@ -265,68 +292,12 @@ namespace SpringGUI
             }
             return vh;
         }
-
+        
         /// <summary>
-        /// Gets the quad.
+        /// Show Icon
         /// </summary>
-        /// <returns>The quad.</returns>
-        /// <param name="startPos">Start position.</param>
-        /// <param name="endPos">End position.</param>
-        /// <param name="color0">Color0.</param>
-        /// <param name="LineWidth">Line width.</param>
-        protected UIVertex[] GetQuad( Vector2 startPos , Vector2 endPos , Color color0 , float LineWidth = 2.0f )
-        {
-            float dis = Vector2.Distance(startPos , endPos);
-            float y = LineWidth * 0.5f * ( endPos.x - startPos.x ) / dis;
-            float x = LineWidth * 0.5f * ( endPos.y - startPos.y ) / dis;
-            if ( y <= 0 )
-                y = -y;
-            else
-                x = -x;
-            UIVertex[] vertex = new UIVertex[4];
-            vertex[0].position = new Vector3(startPos.x + x , startPos.y + y);
-            vertex[1].position = new Vector3(endPos.x + x , endPos.y + y);
-            vertex[2].position = new Vector3(endPos.x - x , endPos.y - y);
-            vertex[3].position = new Vector3(startPos.x - x , startPos.y - y);
-            for ( int i = 0 ; i < vertex.Length ; i++ )
-                vertex[i].color = color0;
-            return vertex;
-        }
-
-        /// <summary>
-        /// Gets the user interface vertex.
-        /// </summary>
-        /// <returns>The user interface vertex.</returns>
-        /// <param name="point">Point.</param>
-        /// <param name="color0">Color0.</param>
-        protected UIVertex GetUIVertex( Vector2 point , Color color0 )
-        {
-            UIVertex vertex = new UIVertex
-            {
-                position = point ,
-                color = color0 ,
-            };
-            return vertex;
-        }
-
-        /// <summary>
-        /// Gets the quad dottedline.
-        /// </summary>
-        /// <returns>The quad dottedline.</returns>
-        /// <param name="startpos">Startpos.</param>
-        /// <param name="endPos">End position.</param>
-        /// <param name="color0">Color0.</param>
-        /// <param name="lineWidth">Line width.</param>
-        protected UIVertex[] GetQuadDottedline( Vector2 startpos,Vector2 endPos , Color color0 ,float lineWidth = 2.0f )
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Shows the icon.
-        /// </summary>
-        /// <param name="iconPrefab">Icon prefab.</param>
-        /// <param name="position">Position.</param>
+        /// <param name="iconPrefab"></param>
+        /// <param name="position"></param>
         protected void ShowIcon( GameObject iconPrefab , Vector2 position )
         {
             if (null == iconPrefab)

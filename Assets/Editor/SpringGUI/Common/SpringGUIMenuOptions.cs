@@ -238,7 +238,7 @@ namespace SpringGUI
             lineGraph.AddComponent<LineChart>();
         }
 
-
+        [MenuItem("GameObject/UI/SpringGUI/Data Graph/RadarMap")]
         public static void AddRadarMap( MenuCommand menuCommand )
         {
             GameObject radarMap = SpringGUIDefaultControls.CreateRadarMap(GetStandardResources());

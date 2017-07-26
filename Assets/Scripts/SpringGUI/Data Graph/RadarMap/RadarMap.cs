@@ -11,46 +11,44 @@ using System.Collections.Generic;
 
 namespace SpringGUI
 {
-    public enum RadarMapType
+    public enum RadarType
     {
-        RadarBase,
-        Radar1,
-        Radar2,
-        Radar3,
-        Radar4,
-        Radar5 
+        Base,
+        Type1,
+        Type2,
+        Type3,
+        Type4,
+        Type5,
     }
 
     public class RadarMap : MaskableGraphic
     {
         [SerializeField]
-        public RadarMapType radarMapType = RadarMapType.Radar5;
+        public RadarType radarType = RadarType.Base;
 
-        [SerializeField]
-        public RadarBaseData RadarBaseData = null;
+        [SerializeField] public RadarBaseData RadarBaseData = null;
 
         // 雷达图绘制工厂
         private IRadarFactory m_radarFactory
         {
             get
             {
-                switch ( radarMapType )
+                switch ( radarType )
                 {
-                    case RadarMapType.RadarBase:
+                    case RadarType.Base:
                         return new BaseRadarFactory();
-                    case RadarMapType.Radar1:
+                    case RadarType.Type1:
                         return new RadarFactory1();
-                    case RadarMapType.Radar2:
+                    case RadarType.Type2:
                         return new RadarFactory2();
-                    case RadarMapType.Radar3:
+                    case RadarType.Type3:
                         return new RadarFactory3();
-                    case RadarMapType.Radar4:
+                    case RadarType.Type4:
                         return new RadarFactory4();
-                    case RadarMapType.Radar5:
+                    case RadarType.Type5:
                         return new RadarFactory5();
-                    default:
-                        return new BaseRadarFactory();
                 }
+                return null;
             }
         }
 
@@ -58,7 +56,6 @@ namespace SpringGUI
         {
             vh.Clear();
             Rect rect = GetPixelAdjustedRect();
-            RadarBaseData.parent = this.transform;
             m_radarFactory.DrawRadar(vh , rect, RadarBaseData);
         }
 
