@@ -14,8 +14,7 @@
 # SpringGUI 更新日志
 
 - 2017.07.26
-- > Add RadarMap 雷达图、属性图
-
+> - Add RadarMap 雷达图、属性图
 
 - 2017.07.17
 > - Add LineChartGraph 折线图组件
