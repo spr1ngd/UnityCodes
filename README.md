@@ -1,3 +1,4 @@
+
 如果你觉SpringGUI对你有帮助，点击右上角的Star，谢谢！！！
 
 - 欢迎你关注我的博客，每一个组件会在博客有更加详细的原理介绍
@@ -11,6 +12,10 @@
 如果你在Github中下载不到，你可以去博客置顶里面去获取最新的CSDN下载地址，如果你有的别的需求，比如想实现一个UI组件，Email我 springu3d@yeah.net,我来帮你解答。
 
 # SpringGUI 更新日志
+
+- 2017.07.26
+> - Add RadarMap 雷达图、属性图
+
 - 2017.07.17
 > - Add LineChartGraph 折线图组件
 
