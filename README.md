@@ -1,6 +1,6 @@
 **SpringGUI已经停止更新，转向更加全面且好用的UChart欢迎访问，开发期间，如果你有什么好的提议欢迎在Issues或邮箱留言，尽可能提供第一时间解决。**
 
-**[UChart Github地址](https://github.com/springd5211/UChart)**
+**[UChart Github地址](https://github.com/springd5211/UChart) 欢迎留下你的需求和Star**
 
 **[UChart 未来官网](http://uchart.club/)**
 
